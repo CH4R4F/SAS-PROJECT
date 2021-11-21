@@ -1,6 +1,6 @@
 # working roadMap
 
-> 11 / 21 / 2021: planing and start working
+> 11 / 21 / 2021: planing and start working - 11:59PM finish the first day, repport Done
 
 the whole project is a bank system that can create and store users, make operations, show account details and more.
 
@@ -25,42 +25,83 @@ BUT: before storing data I have to generate a uniq ID to each account, I'm lazy 
 **_PCode_**:
 
 ```c
-void createAccount() {
-    // variables to store users infos (fn, ln, cin, amount)
-    // ask for infos and store inputs
-    .
-    .
-    .
-    // create a structure from that database
-    struct Account acc = {fn, ln, cin, amount};
+void createAccount(int i) {
+    clear(); // clear the terminal
+    createAccountHeader // add some fancy headers
+    mg_s // margins between header and content
+    printf("account NO %d\n", i);
+    char firstName[25];
+    char lastName[25];
+    char cin[15];
+    char amount[25];
+
+    do {
+        printf("Enter your first name: ");
+        fgets(firstName, 20, stdin);
+        firstName[strlen(firstName) - 1] = '\0';
+    } while (firstName[0] == '\0');
+    do {
+        printf("Enter your last name: ");
+        fgets(lastName, 20, stdin);
+        lastName[strlen(lastName) - 1] = '\0';
+    } while (lastName[0] == '\0');
+    do {
+        printf("Enter your CIN: ");
+        fgets(cin, 10, stdin);
+        cin[strlen(cin) - 1] = '\0';
+    } while (cin[0] == '\0');
+    do {
+        printf("Enter amount of money: ");
+        fgets(amount, 30, stdin);
+        amount[strlen(amount) - 1] = '\0';
+    } while (amount[0] == '\0');
+
+    newAccount acc = {firstName, lastName, cin, amount};
     saveAccount(acc);
 }
 
 // after a moment of searching in stackOverflow I found a way to count lines of a file
-
-int idGen(){
-    // max character in a line (string)
+int idGen() {
+    char buffer[100];
     int id = 1;
-
-    // open file in mode of reading
     FILE *f = fopen("bank.db", "r");
-
-    // reade at least 100 char in the line, store it in a variable, then increment a counter.
-    // when there is no line left then stop the loop
     while(fgets(buffer, 100, f)){
         id++;
     }
-    // close the file and return the number of lines
     fclose(f);
     return id;
 }
 
 // then create saveAccount function
 void saveAccount(newAccount acc) {
+    FILE *db = fopen("bank.db", "a");
 
-    // open the file in append mode and store its adress in a pointer
-    // add the new data using fprintf() function
+    // generate the id of the account based on the number of lines
     fprintf(db, "%d:%s-%s-%s-%s\n", idGen(), acc.fn, acc.ln, acc.cin, acc.amount);
     fclose(db);
+}
+```
+after creating account all the data will be stored in the db file (each user in each line)
+
+## create multiple accounts:
+simple function that will ask for a count of account that the user wants to creat then call the `createAccount` multiple times
+```c
+void createMultipleAccount() {
+    int count;
+    start:
+    clear();
+    mg_s
+
+    createMultipleAccountHeader
+    mg_s
+    printf("=> please enter how much account you want to create: ");
+    scanf("%d", &count);
+    fflush(stdin); // cleare the buffer in case of unexpected input
+    while (!count) {
+        goto start;
+    }
+    for(int i = 1; i <= count; i++) {
+        createAccount(i);
+    } 
 }
 ```
