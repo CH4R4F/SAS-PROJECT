@@ -8,6 +8,8 @@
 #define mainHeader printf("########## Main Menu ##########");
 #define createAccountHeader printf("########## Main Menu > Create account ##########");
 #define createMultipleAccountHeader printf("########## Main Menu > Create multiple accounts ##########");
+#define operationsHeader printf("########## Main Mennu > Operations ##########");
+#define withdrawHeader printf("########## Main Mennu > Operations > Withdraw ##########");
 // margins
 #define mg_s printf("\n\n");
 #define mg_m printf("\n\n\n");
@@ -17,6 +19,9 @@ void clear();
 void saveAccount();
 void createAccount();
 int idGen();
+void operations();
+char parseData(int x);
+char *toLowerCase(char str[]);
 // structs
 typedef struct Account {
     char *fn;
@@ -24,4 +29,7 @@ typedef struct Account {
     char *cin;
     char *amount;
 } newAccount;
+
+
+
 #endif

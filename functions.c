@@ -1,7 +1,7 @@
 #include "ucode.h"
 
 
-// function to clear the terminal of multiple OS
+// function to clear the terminal on multiple OS
 void clear(){
     #if defined(__linux__) || defined(__unix__) || defined(__APPLE__)
         system("clear");
@@ -44,8 +44,6 @@ void createAccount(int i) {
 
     newAccount acc = {firstName, lastName, cin, amount};
     saveAccount(acc);
-
-
 }
 
 void createMultipleAccount() {
@@ -66,15 +64,53 @@ void createMultipleAccount() {
     for(int i = 1; i <= count; i++) {
         createAccount(i);
     }
-    
-    
 }
 
-void startOptions() {
+void operations() {
     clear();
-    
+    operationsHeader
+    int i = idGen();
+    mg_s
+    if(!(i - 1)) {
+        int choice;
+        printf("===| Ooops, it looks like you have no account |====\n");
+        mg_s
+        printf("[1] - create new account            [0] - back");
+        mg_s
+        printf("    Enter your choic: ");
+        scanf("%d", &choice);
+        fflush(stdin);
+        if(choice == 1) {
+            createAccount(i);
+        } 
+    } else {
+        retry:
+        clear();
+        int choice;
+        operationsHeader
+        mg_s
+        printf("[1] - Withdraw\n");
+        printf("[2] - Deposit\n");
+        printf("[0] - Back");
+        mg_s
+        printf("    Enter your choice: ");
+        scanf("%d", &choice);
+        fflush(stdin);
+        if(choice == 1) {
+            char cin[10];
+            clear();
+            withdrawHeader
+            mg_s
+            printf("Enter the accounts CIN: ");
+            
+        } else if(choice == 2) {
 
+        } else {
+            goto retry;
+        }
+    }
 }
+
 
 void startApplication() {
     int input;
@@ -103,25 +139,26 @@ void startApplication() {
 
     
     switch (input) {
-    case 1:
-        createAccount(idGen());
-        startApplication();
-        break;
-    case 2:
-        createMultipleAccount();
-        startApplication();
-        break;
-    case 3:
-        startOptions();
-        break;
-    case 4:
-        break;
-    case 5:
-        break;
-    case 6:
-        break;
-    default:
-        goto invalid;
+        case 1:
+            createAccount(idGen());
+            startApplication();
+            break;
+        case 2:
+            createMultipleAccount();
+            startApplication();
+            break;
+        case 3:
+            operations();
+            startApplication();
+            break;
+        case 4:
+            break;
+        case 5:
+            break;
+        case 6:
+            break;
+        default:
+            goto invalid;
     }
 
 }

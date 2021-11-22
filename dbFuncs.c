@@ -19,6 +19,6 @@ void saveAccount(newAccount acc) {
     FILE *db = fopen("bank.db", "a");
 
     // generate the id of the account based on the number of lines
-    fprintf(db, "%d:%s-%s-%s-%s\n", idGen(), acc.fn, acc.ln, acc.cin, acc.amount);
+    fprintf(db, "%d|%s|%s|%s|%s\n", idGen(), acc.fn, acc.ln, acc.cin, acc.amount);
     fclose(db);
 }
