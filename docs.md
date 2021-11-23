@@ -2,7 +2,9 @@
 
 > 11 / 21 / 2021: planing and start working - 11:59PM finish the first day, repport Done [read here](#day-2)
 
-> 11 / 23 / 2021: fix bugs, add features and start planing for tomorrow, 1:30AM repport Done [read here](#day-1)
+> 11 / 22 / 2021: fix bugs, add features and start planing for tomorrow, 1:30AM repport Done [read here](#day-1)
+
+> 11 / 23 / 2021: optimize the code, parse data from db and use it to make operations [read here](#day-3)
 
 ### day 1
 
@@ -113,6 +115,75 @@ void createMultipleAccount() {
 }
 ```
 
-## day 2
+### day 2
 
 I finished the function to create multiple account and start working on the operations, I had to fix bugs and plan for how to parse data from the db so I can deal with money transformations, I added som functionalities to check if there are any accounts in the db before doing any operation, now I have to find an idea to parse data from the db and work on it, I'll check for the right account by the `CIN`, also check if there is enough money to make operations or not, then I have to find a way to update the db after each operation. this is the plan for tomorrow now I have to take some rest.
+
+### day 3
+
+finally I did it, I make a way to parse data from the db. well there is no easy way than working with `JSON` data format, so I tried to make similar to it.
+I create an array of `structs`, loop over the db and store each element in a line in it's own variable inside each struct.
+**example:**
+
+```
+bank.db
+1 charaf marghin cb3324 1000
+```
+
+this line have `id`, `first name`, `last name`, `cin`, and `amount`
+
+```C
+void parseData() {
+    struct Account user[100];
+    .
+    .
+    .
+    int id, i = 0;
+    float amount;
+
+    FILE *db = fopen("bank.db", "r");
+    while(1) {
+        // keep looping until end of file, each loop store values to each struct in the user array
+        fscanf(db, "%d %s %s %s %f", &id, &user[i].fn, &user[i].ln, &user[i].cin, &amount);
+        if(feof(db))
+            break;
+
+        user[i].id = id;
+        user[i].amount = amount;
+        i++;
+    }
+    fclose(db);
+}
+```
+
+now I have user[] array that stores structs. in the example i have array stores struct that store file values. it looks like this:
+
+```
+//user array (مقطع توضيحي هه):
+[
+    {
+        id = 1;
+        fn = charaf;
+        ln = marghin;
+        cin = cb3324;
+        amount = 1000;
+    }
+]
+```
+
+Now I can work on operations
+
+## Operations:
+
+operations is a menu (withdraw, deposit, back), each choice has it's own functionality
+today I finished the withdraw function that take `CIN` from the user **=>** checks for the cin in the _parsed data_ **=>** if there is a cin then show a current status of the account **=>** take the amount from the user to remove from the account (ofcourse after validating that amount) **=>** remove the amount in the struct where I already found the `CIN` **=>** remoove the database **=>** loop over the parsed/updated data and sore it again.
+
+> in case there is no account in the db then the user have to create account first, in case the cin that he types to pull from an account is not found then ask him to retry again
+
+### bonus work today:
+
+I have optimized the code, add some features like checking of there is an account with the same `CIN` when the user creates an account. if true then show him an alert and rescan the `CIN`
+
+### plan for tomorrow:
+
+the last day. I have to finish the `deposit` function, the display tasks (sorting accounts), loyality feature of the bank and try to make some of the optional challenges.

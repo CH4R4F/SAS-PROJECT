@@ -1,5 +1,5 @@
 #include "ucode.h"
-
+// create array of structs
 newAccount user[100];
 
 // function to clear the terminal on multiple OS
@@ -12,62 +12,95 @@ void clear(){
     #endif
 }
 
+// fill the user array with the data from the database
 void parseData() {
     int id, i = 0;
-    char fn[25], ln[25], cin[10];
     float amount;
 
     FILE *db = fopen("bank.db", "r");
-    while(fscanf(db, "%d %s %s %s %f", &id, &fn, &ln, &cin, &amount) != EOF) {
+    while(1) {
+        // keep looping until end of file, each loop store values to each struct in the user array
+        fscanf(db, "%d %s %s %s %f", &id, &user[i].fn, &user[i].ln, &user[i].cin, &amount);
+        if(feof(db))
+            break;
+
         user[i].id = id;
-        user[i].fn = fn;
-        user[i].ln = ln;
-        user[i].cin = cin;
         user[i].amount = amount;
         i++;
     }
     fclose(db);
 }
 
+
+// show table based on user's info
+void infoTable(newAccount acc) {
+    mg_s
+
+    printf("Id: %d\n", acc.id);
+    printf("Name: %s %s\n", acc.fn, acc.ln);
+    printf("CIN: %s\n", acc.cin);
+    printf("Amount: %.2f\n", acc.amount);
+}
+
+
+// create account function
 void createAccount(int i) {
     clear();
     createAccountHeader
     mg_s
     printf("account NO %d\n", i);
-    char firstName[25];
-    char lastName[25];
-    char cin[15];
-    float amount;
+    // create struct from inputs
+    newAccount acc;
 
+    // keep asking while the user gives empty input
+    // first name
     do {
         printf("Enter your first name: ");
-        fgets(firstName, 20, stdin);
-        firstName[strlen(firstName) - 1] = '\0';
-    } while (firstName[0] == '\0');
+        fgets(acc.fn, 20, stdin);
+        acc.fn[strlen(acc.fn) - 1] = '\0';
+    } while (acc.fn[0] == '\0');
+    // last name
     do {
         printf("Enter your last name: ");
-        fgets(lastName, 20, stdin);
-        lastName[strlen(lastName) - 1] = '\0';
-    } while (lastName[0] == '\0');
+        fgets(acc.ln, 20, stdin);
+        acc.ln[strlen(acc.ln) - 1] = '\0';
+    } while (acc.ln[0] == '\0');
+    // cin
     do {
+        parseData();
+        int i = 0;
+        int count = idGen();
+        int exist = 0;
         printf("Enter your CIN: ");
-        fgets(cin, 10, stdin);
-        cin[strlen(cin) - 1] = '\0';
-    } while (cin[0] == '\0');
+        fgets(acc.cin, 10, stdin);
+        acc.cin[strlen(acc.cin) - 1] = '\0';
+        // loop over accounts and check if there is a similar cin
+        while (i < count) {
+            if (strcmp(strupr(acc.cin), strupr(user[i].cin)) == 0) {
+                exist = 1;
+                break;
+            }
+            i++;
+        }
+        // if exist then retry and show alert
+        if(exist) {
+            printf("\n### Oops, this CIN is already existed!! ###\n\n");
+            acc.cin[0] = '\0';
+        }
+    } while (acc.cin[0] == '\0');
+    // amount
     do {
         printf("Enter amount of money: ");
-        scanf("%f", &amount);
+        scanf("%f", &acc.amount);
         fflush(stdin);
-    } while ((int)amount <= 0);
-    newAccount user;
-    user.id = idGen();
-    user.fn = firstName;
-    user.ln = lastName;
-    user.cin = cin;
-    user.amount = amount;
-    saveAccount(user);
+    } while ((int)acc.amount <= 0);
+    
+    // generate id
+    acc.id = idGen();
+    // send info to save them in the db
+    saveAccount(acc);
 }
-
+// create multiple accounts
 void createMultipleAccount() {
     int count;
     start:
@@ -76,48 +109,72 @@ void createMultipleAccount() {
 
     createMultipleAccountHeader
     mg_s
+    // ask for how many accounts
     printf("=> please enter how much account you want to create: ");
     scanf("%d", &count);
     fflush(stdin);
     while (!count) {
         goto start;
     }
-    
+    // keep creating account
     for(int i = 1; i <= count; i++) {
         createAccount(i);
     }
 }
+
 void withdraw() {
     clear();
     char userCin[15];
-    int i = 0;
+    int i, exist = 0;
+    int count = idGen();
+    goto enterCin;
+
+    renterCin:
+    printf("\n### Oops, there is no account with this CIN ###\n");
+    enterCin:
     withdrawHeader
     mg_s
+    i = 0;
     printf("Enter the account CIN: ");
     scanf("%s", &userCin);
+    fflush(stdin);
+    // parse database data
     parseData();
-    // while (user[i].id) {
-    //     if (!strcmp(strupr(cin), user[i].cin)) {
-    //         printf("exist account");
-    //         break;
-    //     }
-    //         printf("%s\n", user[i].cin);
-
-    //     i++;
-    // }
-    
-    while (user[i].id) {
-        printf("\n== %s", user[i].cin);
-        printf("%d", user[i].id);
-        printf("%s", user[i].fn);
-        printf("%s", user[i].ln);
-        printf("%f", user[i].amount);
+    // then check if there is an account with this cin or not
+    while (i < count) {
+        if (!strcmp(strupr(userCin), strupr(user[i].cin))) {
+            infoTable(user[i]);
+            exist = 1;
+            break;
+        }
         i++;
     }
-    
-    
-    
+    // if exist then
+    if(exist) {
+        float amnt;
+        mg_s
+        // store the amount to withdraw every time the user type invalid amount
+        do {
+            printf("    Enter the amount to withdraw: ");
+            scanf("%f", &amnt);
+            fflush(stdin);
+        } while (amnt <= 0 || amnt > user[i].amount);
+        // update the amount in the index where I found the cin
+        user[i].amount -= amnt;
+        // delete everything from the database
+        FILE *db = fopen("bank.db", "w");
+        fclose(db);
+        // show changes
+        infoTable(user[i]);
+        // then apdate the db with the data I parsed and edited
+        for (int i = 0; i < count - 1; i++) {
+            saveAccount(user[i]);
+        }
+    } else {
+        goto renterCin;
+    }
 }
+
 
 void operations() {
     clear();

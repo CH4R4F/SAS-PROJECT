@@ -21,15 +21,14 @@ void createAccount();
 int idGen();
 void operations();
 void parseData();
-void callData();
 // structs
 typedef struct Account {
     int id;
-    char *fn;
-    char *ln;
-    char *cin;
+    char fn[20];
+    char ln[20];
+    char cin[20];
     float amount;
-} newAccount;
+}newAccount;
 
 
 
