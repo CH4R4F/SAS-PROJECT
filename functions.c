@@ -1,5 +1,6 @@
 #include "ucode.h"
 
+newAccount user[100];
 
 // function to clear the terminal on multiple OS
 void clear(){
@@ -11,6 +12,23 @@ void clear(){
     #endif
 }
 
+void parseData() {
+    int id, i = 0;
+    char fn[25], ln[25], cin[10];
+    float amount;
+
+    FILE *db = fopen("bank.db", "r");
+    while(fscanf(db, "%d %s %s %s %f", &id, &fn, &ln, &cin, &amount) != EOF) {
+        user[i].id = id;
+        user[i].fn = fn;
+        user[i].ln = ln;
+        user[i].cin = cin;
+        user[i].amount = amount;
+        i++;
+    }
+    fclose(db);
+}
+
 void createAccount(int i) {
     clear();
     createAccountHeader
@@ -19,7 +37,7 @@ void createAccount(int i) {
     char firstName[25];
     char lastName[25];
     char cin[15];
-    char amount[25];
+    float amount;
 
     do {
         printf("Enter your first name: ");
@@ -38,11 +56,16 @@ void createAccount(int i) {
     } while (cin[0] == '\0');
     do {
         printf("Enter amount of money: ");
-        fgets(amount, 30, stdin);
-        amount[strlen(amount) - 1] = '\0';
-    } while (amount[0] == '\0');
-
-    saveAccount(firstName, lastName, cin, amount);
+        scanf("%f", &amount);
+        fflush(stdin);
+    } while ((int)amount <= 0);
+    newAccount user;
+    user.id = idGen();
+    user.fn = firstName;
+    user.ln = lastName;
+    user.cin = cin;
+    user.amount = amount;
+    saveAccount(user);
 }
 
 void createMultipleAccount() {
@@ -63,6 +86,37 @@ void createMultipleAccount() {
     for(int i = 1; i <= count; i++) {
         createAccount(i);
     }
+}
+void withdraw() {
+    clear();
+    char userCin[15];
+    int i = 0;
+    withdrawHeader
+    mg_s
+    printf("Enter the account CIN: ");
+    scanf("%s", &userCin);
+    parseData();
+    // while (user[i].id) {
+    //     if (!strcmp(strupr(cin), user[i].cin)) {
+    //         printf("exist account");
+    //         break;
+    //     }
+    //         printf("%s\n", user[i].cin);
+
+    //     i++;
+    // }
+    
+    while (user[i].id) {
+        printf("\n== %s", user[i].cin);
+        printf("%d", user[i].id);
+        printf("%s", user[i].fn);
+        printf("%s", user[i].ln);
+        printf("%f", user[i].amount);
+        i++;
+    }
+    
+    
+    
 }
 
 void operations() {
@@ -96,16 +150,7 @@ void operations() {
         scanf("%d", &choice);
         fflush(stdin);
         if(choice == 1) {
-            char cin[10];
-            clear();
-            withdrawHeader
-            mg_s
-            enterCin:
-            parseData();
-            printf("Enter the accounts CIN: ");
-            scanf("%s", &cin);
-            
-            
+            withdraw();
         } else if(choice == 2) {
 
         } else {
@@ -113,6 +158,7 @@ void operations() {
         }
     }
 }
+
 
 
 void startApplication() {
@@ -152,7 +198,7 @@ void startApplication() {
             break;
         case 3:
             operations();
-            startApplication();
+            // startApplication();
             break;
         case 4:
             break;

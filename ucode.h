@@ -15,19 +15,20 @@
 #define mg_m printf("\n\n\n");
 // functions prototype
 void startApplication();
-char *parseData();
 void clear();
 void saveAccount();
 void createAccount();
 int idGen();
 void operations();
-char *toLowerCase(char str[]);
+void parseData();
+void callData();
 // structs
 typedef struct Account {
+    int id;
     char *fn;
     char *ln;
     char *cin;
-    char *amount;
+    float amount;
 } newAccount;
 
 
