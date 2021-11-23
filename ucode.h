@@ -15,12 +15,12 @@
 #define mg_m printf("\n\n\n");
 // functions prototype
 void startApplication();
+char *parseData();
 void clear();
 void saveAccount();
 void createAccount();
 int idGen();
 void operations();
-char parseData(int x);
 char *toLowerCase(char str[]);
 // structs
 typedef struct Account {

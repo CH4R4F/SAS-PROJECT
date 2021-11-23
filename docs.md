@@ -1,6 +1,10 @@
 # working roadMap
 
-> 11 / 21 / 2021: planing and start working - 11:59PM finish the first day, repport Done
+> 11 / 21 / 2021: planing and start working - 11:59PM finish the first day, repport Done [read here](#day-2)
+
+> 11 / 23 / 2021: fix bugs, add features and start planing for tomorrow, 1:30AM repport Done [read here](#day-1)
+
+### day 1
 
 the whole project is a bank system that can create and store users, make operations, show account details and more.
 
@@ -81,10 +85,13 @@ void saveAccount(newAccount acc) {
     fclose(db);
 }
 ```
+
 after creating account all the data will be stored in the db file (each user in each line)
 
 ## create multiple accounts:
+
 simple function that will ask for a count of account that the user wants to creat then call the `createAccount` multiple times
+
 ```c
 void createMultipleAccount() {
     int count;
@@ -102,6 +109,10 @@ void createMultipleAccount() {
     }
     for(int i = 1; i <= count; i++) {
         createAccount(i);
-    } 
+    }
 }
 ```
+
+## day 2
+
+I finished the function to create multiple account and start working on the operations, I had to fix bugs and plan for how to parse data from the db so I can deal with money transformations, I added som functionalities to check if there are any accounts in the db before doing any operation, now I have to find an idea to parse data from the db and work on it, I'll check for the right account by the `CIN`, also check if there is enough money to make operations or not, then I have to find a way to update the db after each operation. this is the plan for tomorrow now I have to take some rest.

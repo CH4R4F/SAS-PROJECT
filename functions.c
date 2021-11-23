@@ -42,8 +42,7 @@ void createAccount(int i) {
         amount[strlen(amount) - 1] = '\0';
     } while (amount[0] == '\0');
 
-    newAccount acc = {firstName, lastName, cin, amount};
-    saveAccount(acc);
+    saveAccount(firstName, lastName, cin, amount);
 }
 
 void createMultipleAccount() {
@@ -101,7 +100,11 @@ void operations() {
             clear();
             withdrawHeader
             mg_s
+            enterCin:
+            parseData();
             printf("Enter the accounts CIN: ");
+            scanf("%s", &cin);
+            
             
         } else if(choice == 2) {
 
