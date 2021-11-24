@@ -4,12 +4,7 @@ newAccount user[100];
 
 // function to clear the terminal on multiple OS
 void clear(){
-    #if defined(__linux__) || defined(__unix__) || defined(__APPLE__)
-        system("clear");
-    #endif
-    #if defined(_WIN32) || defined(_WIN64)
-        system("cls");
-    #endif
+    system("cls");
 }
 
 // fill the user array with the data from the database
@@ -42,7 +37,10 @@ void infoTable(newAccount acc) {
     printf("Amount: %.2f\n", acc.amount);
 }
 
-
+// row info
+void rowInfo(newAccount acc) {
+    printf("name: %s %s | CIN: %s | amount: %.2f\n\n", acc.fn, acc.ln, acc.cin, acc.amount);
+}
 // create account function
 void createAccount(int i) {
     clear();
@@ -136,12 +134,25 @@ void withdraw(int index, int x) {
     // delete everything from the database
     FILE *db = fopen("bank.db", "w");
     fclose(db);
+    printf("#### => Operation Done Successfully\n");
     // show changes
     infoTable(user[index]);
-    // then apdate the db with the data I parsed and edited
+    // then update the db with the data I parsed and edited
     for (int i = 0; i < x - 1; i++) {
         saveAccount(user[i]);
     }
+
+     mg_s
+    int c;
+    printf("[1] - Main Menu\t\t\t");
+    printf("[2] - Quite\n\n");
+
+    printf("   Enter your choice: ");
+    scanf("%d", &c);
+    fflush(stdin);
+    if(c == 1) {
+        startApplication();
+    } 
 }
 
 void deposite(int index, int count) {
@@ -158,11 +169,24 @@ void deposite(int index, int count) {
     FILE *db = fopen("bank.db", "w");
     fclose(db);
     // show changes
+    printf("#### => Operation Done Successfully\n");
     infoTable(user[index]);
-    // then apdate the db with the data I parsed and edited
+    // then update the db with the data I parsed and edited
     for (int i = 0; i < count - 1; i++) {
         saveAccount(user[i]);
     }
+    mg_s
+    int c;
+    printf("[1] - Main Menu\t\t\t");
+    printf("[2] - Quite\n\n");
+
+    printf("   Enter your choice: ");
+    scanf("%d", &c);
+    fflush(stdin);
+    if(c == 1) {
+        startApplication();
+    } 
+
 
 }
 
@@ -238,6 +262,61 @@ void operations() {
 }
 
 
+void sortData(int x){
+    int max = idGen();
+
+    for(int i = 0; i < max - 1; i++) {
+        for (int j = 1; j < max - 1; j++) {
+            if(x == 1) {
+                if(user[j].amount > user[j - 1].amount) {
+                    newAccount tmp1 = user[j];
+                    user[j] = user[j+1];
+                    user[j+1] = tmp1;
+                }
+            } else {
+                if(user[j].amount < user[j + 1].amount) {
+                    newAccount tmp2 = user[j];
+                    user[j] = user[j+1];
+                    user[j+1] = tmp2;
+                }
+            }
+            
+        }
+    }
+    
+}
+
+
+void displayMenu() {
+    clear();
+    int choice;
+    // parse and loop over the data and show initial data table
+    parseData();
+    int count = idGen() - 1;
+    for (int i = 0; i < count; i++) {
+        rowInfo(user[i]);
+    }
+    mg_s
+    printf("[1] - By Ascending Order\n");
+    printf("[2] - By Descending Order\n");
+    printf("[3] - Ascending Filter\n");
+    printf("[4] - Descending Filter\n");
+    printf("[5] - Back\n");
+    mg_s
+    // keep asking if the user entered invalid choice
+    do {
+        printf("  Enter your choice: ");
+        scanf("%d", &choice);
+        fflush(stdin);
+    } while (choice > 5 || choice < 1);
+
+    if (choice == 1 || choice == 2) {
+        sortData(choice);
+        for (int i = 0; i < count; i++) {
+        rowInfo(user[i]);
+    }
+    }
+}
 
 void startApplication() {
     int input;
@@ -276,9 +355,10 @@ void startApplication() {
             break;
         case 3:
             operations();
-            // startApplication();
+            startApplication();
             break;
         case 4:
+            displayMenu();
             break;
         case 5:
             break;
