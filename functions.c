@@ -254,7 +254,6 @@ void operations() {
         case 2:
             deposite(i, count);
             break;
-        
         default:
             goto retry;
         }
@@ -340,6 +339,8 @@ void displayMenu() {
         } else {
             printf("#### ERROR 404: account with CIN: %s not found", cin);
         }
+    } else {
+        startApplication();
     }
     int finalMenu;
     mg_s
@@ -352,6 +353,14 @@ void displayMenu() {
     } else if(finalMenu == 2) {
         startApplication();
     }
+}
+
+void reprise() {
+    parseData();
+    sortData(2);
+    for (int i = 0; i < 3; i++) {
+        printf("%f\n", user[i].amount);
+    }
     
 }
 
@@ -362,7 +371,6 @@ void startApplication() {
     invalid:
     printf("####### Invalid choice try again #########\n");
 
-
     start:
     clear();
     mainHeader
@@ -370,7 +378,7 @@ void startApplication() {
     printf("[1] - Create new account.\n");
     printf("[2] - Create many accounts.\n");
     printf("[3] - Operations.\n");
-    printf("[4] - Affichage.\n");
+    printf("[4] - Display.\n");
     printf("[5] - Loyalty.\n");
     printf("[6] - Quite.\n");
 
@@ -399,6 +407,7 @@ void startApplication() {
             // startApplication();
             break;
         case 5:
+            reprise();
             break;
         case 6:
             break;
