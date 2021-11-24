@@ -122,59 +122,49 @@ void createMultipleAccount() {
     }
 }
 
-void withdraw() {
-    clear();
-    char userCin[15];
-    int i, exist = 0;
-    int count = idGen();
-    goto enterCin;
-
-    renterCin:
-    printf("\n### Oops, there is no account with this CIN ###\n");
-    enterCin:
-    withdrawHeader
+void withdraw(int index, int x) {
+    float amnt;
     mg_s
-    i = 0;
-    printf("Enter the account CIN: ");
-    scanf("%s", &userCin);
-    fflush(stdin);
-    // parse database data
-    parseData();
-    // then check if there is an account with this cin or not
-    while (i < count) {
-        if (!strcmp(strupr(userCin), strupr(user[i].cin))) {
-            infoTable(user[i]);
-            exist = 1;
-            break;
-        }
-        i++;
-    }
-    // if exist then
-    if(exist) {
-        float amnt;
-        mg_s
-        // store the amount to withdraw every time the user type invalid amount
-        do {
-            printf("    Enter the amount to withdraw: ");
-            scanf("%f", &amnt);
-            fflush(stdin);
-        } while (amnt <= 0 || amnt > user[i].amount);
-        // update the amount in the index where I found the cin
-        user[i].amount -= amnt;
-        // delete everything from the database
-        FILE *db = fopen("bank.db", "w");
-        fclose(db);
-        // show changes
-        infoTable(user[i]);
-        // then apdate the db with the data I parsed and edited
-        for (int i = 0; i < count - 1; i++) {
-            saveAccount(user[i]);
-        }
-    } else {
-        goto renterCin;
+    // store the amount to withdraw every time the user type invalid amount
+    do {
+        printf("    Enter the amount to withdraw: ");
+        scanf("%f", &amnt);
+        fflush(stdin);
+    } while (amnt <= 0 || amnt > user[index].amount);
+    // update the amount in the index where I found the cin
+    user[index].amount -= amnt;
+    // delete everything from the database
+    FILE *db = fopen("bank.db", "w");
+    fclose(db);
+    // show changes
+    infoTable(user[index]);
+    // then apdate the db with the data I parsed and edited
+    for (int i = 0; i < x - 1; i++) {
+        saveAccount(user[i]);
     }
 }
 
+void deposite(int index, int count) {
+    float amnt;
+    mg_s
+    do {
+        printf("Enter the amount to add: ");
+        scanf("%f", &amnt);
+        fflush(stdin);
+    } while (amnt <= 0);
+
+    user[index].amount += amnt;
+
+    FILE *db = fopen("bank.db", "w");
+    fclose(db);
+    // show changes
+    infoTable(user[index]);
+    // then apdate the db with the data I parsed and edited
+    for (int i = 0; i < count - 1; i++) {
+        saveAccount(user[i]);
+    }
+
+}
 
 void operations() {
     clear();
@@ -194,23 +184,54 @@ void operations() {
             createAccount(i);
         } 
     } else {
-        retry:
-        clear();
+        int i;
+        char userCin[15];
+        int count = idGen();
+        int exist = 0;
         int choice;
+        parseData();
+        
+        clear();
         operationsHeader
         mg_s
-        printf("[1] - Withdraw\n");
-        printf("[2] - Deposit\n");
-        printf("[0] - Back");
+        do {
+            i = 0;
+            printf("Enter the account CIN: ");
+            scanf("%s", &userCin);
+            fflush(stdin);
+            while (i < count) {
+                if (strcmp(strupr(userCin), strupr(user[i].cin)) == 0) {
+                    exist = 1;
+                    break;
+                }
+                i++;
+            }
+            // if exist then retry and show alert
+            if(!exist) {
+                printf("\n### Oops, there is no acc with CIN: %s ###\n\n", userCin);
+                userCin[0] = '\0';
+            }
+        } while (userCin[0] == '\0');
+        
+        infoTable(user[i]);
         mg_s
-        printf("    Enter your choice: ");
+        printf("[1] - withdrw\n");
+        printf("[2] - seposit\n");
+        printf("[0] - back\n");
+        retry:
+        printf("   Enter your choice: ");
         scanf("%d", &choice);
         fflush(stdin);
-        if(choice == 1) {
-            withdraw();
-        } else if(choice == 2) {
-
-        } else {
+        switch (choice)
+        {
+        case 1:
+            withdraw(i, count);
+            break;
+        case 2:
+            deposite(i, count);
+            break;
+        
+        default:
             goto retry;
         }
     }

@@ -10,6 +10,7 @@
 #define createMultipleAccountHeader printf("########## Main Menu > Create multiple accounts ##########");
 #define operationsHeader printf("########## Main Mennu > Operations ##########");
 #define withdrawHeader printf("########## Main Mennu > Operations > Withdraw ##########");
+#define depositeHeader printf("########## Main Menu > Operations > Deposite");
 // margins
 #define mg_s printf("\n\n");
 #define mg_m printf("\n\n\n");
