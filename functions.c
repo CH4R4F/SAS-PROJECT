@@ -26,6 +26,11 @@ void parseData() {
     fclose(db);
 }
 
+// sorted table
+void  table(newAccount acc) {
+    printf("|%9s %9s|%14s|%20f\n", acc.fn, acc.ln, acc.cin, acc.amount);
+    printf("========================================================\n");
+}
 
 // show table based on user's info
 void infoTable(newAccount acc) {
@@ -152,7 +157,9 @@ void withdraw(int index, int x) {
     fflush(stdin);
     if(c == 1) {
         startApplication();
-    } 
+    } else {
+        return;
+    }
 }
 
 void deposite(int index, int count) {
@@ -185,7 +192,9 @@ void deposite(int index, int count) {
     fflush(stdin);
     if(c == 1) {
         startApplication();
-    } 
+    } else {
+        return;
+    }
 
 
 }
@@ -248,14 +257,17 @@ void operations() {
         fflush(stdin);
         switch (choice)
         {
-        case 1:
-            withdraw(i, count);
-            break;
-        case 2:
-            deposite(i, count);
-            break;
-        default:
-            goto retry;
+            case 1:
+                withdraw(i, count);
+                break;
+            case 2:
+                deposite(i, count);
+                break;
+            case 0:
+                startApplication();
+                break;
+            default:
+                goto retry;
         }
     }
 }
@@ -273,10 +285,10 @@ void sortData(int x){
                     user[j-1] = tmp1;
                 }
             } else {
-                if(user[j].amount < user[j + 1].amount) {
+                if(user[j].amount > user[j - 1].amount) {
                     newAccount tmp2 = user[j];
-                    user[j] = user[j+1];
-                    user[j+1] = tmp2;
+                    user[j] = user[j-1];
+                    user[j-1] = tmp2;
                 }
             }
         }
@@ -357,9 +369,35 @@ void displayMenu() {
 
 void reprise() {
     parseData();
-    sortData(2);
+    int count = idGen();
+    printf("The biggest accounts in the bank\n\n");;
     for (int i = 0; i < 3; i++) {
-        printf("%f\n", user[i].amount);
+        table(user[i]);
+    }
+    mg_s
+    int choice;
+    printf("[1] - Add bonus to top 3 accounts        [any key] - Back\n\n");
+    printf("  => Enter your choice: ");
+    scanf("%d", &choice);
+    fflush(stdin);
+
+    if(choice == 1) {
+        sortData(2);
+        for (int i = 0; i < 3; i++) {
+            user[i].amount *= 1.013;
+        }
+
+        FILE *db = fopen("bank.db", "w");
+        fclose(db);
+        for (int i = 0; i < count - 1; i++) {
+            saveAccount(user[i]);
+        }
+
+        for (int i = 0; i < 3; i++) {
+            table(user[i]);
+        }
+    } else {
+        startApplication();
     }
     
 }
@@ -404,7 +442,6 @@ void startApplication() {
             break;
         case 4:
             displayMenu();
-            // startApplication();
             break;
         case 5:
             reprise();
