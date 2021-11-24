@@ -267,11 +267,11 @@ void sortData(int x){
 
     for(int i = 0; i < max - 1; i++) {
         for (int j = 1; j < max - 1; j++) {
-            if(x == 1) {
-                if(user[j].amount > user[j - 1].amount) {
+            if(x == 1 || x == 3) {
+                if(user[j].amount < user[j - 1].amount) {
                     newAccount tmp1 = user[j];
-                    user[j] = user[j+1];
-                    user[j+1] = tmp1;
+                    user[j] = user[j-1];
+                    user[j-1] = tmp1;
                 }
             } else {
                 if(user[j].amount < user[j + 1].amount) {
@@ -280,7 +280,6 @@ void sortData(int x){
                     user[j+1] = tmp2;
                 }
             }
-            
         }
     }
     
@@ -293,29 +292,67 @@ void displayMenu() {
     // parse and loop over the data and show initial data table
     parseData();
     int count = idGen() - 1;
-    for (int i = 0; i < count; i++) {
-        rowInfo(user[i]);
-    }
-    mg_s
     printf("[1] - By Ascending Order\n");
     printf("[2] - By Descending Order\n");
     printf("[3] - Ascending Filter\n");
     printf("[4] - Descending Filter\n");
-    printf("[5] - Back\n");
+    printf("[5] - Search For Account\n");
+    printf("[6] - Back\n");
     mg_s
     // keep asking if the user entered invalid choice
     do {
         printf("  Enter your choice: ");
         scanf("%d", &choice);
         fflush(stdin);
-    } while (choice > 5 || choice < 1);
+    } while (choice > 6 || choice < 1);
 
     if (choice == 1 || choice == 2) {
         sortData(choice);
         for (int i = 0; i < count; i++) {
-        rowInfo(user[i]);
+            infoTable(user[i]);
+        }
+    } else if(choice == 3 || choice == 4) {
+        sortData(choice);
+        mg_s
+        float min;
+        printf("   => Enter the minimun amount: ");
+        scanf("%f", &min);
+        fflush(stdin);
+        for (int i = 0; i < count; i++) {
+            if(user[i].amount >= min) {
+                infoTable(user[i]);
+            }
+        }
+    } else if(choice == 5) {
+        int i = 0, exist = 0;
+        char cin[15];
+        printf("==> Enter the account cin: ");
+        scanf("%s", cin);
+        while (i < count) {
+            if (strcmp(strupr(cin), strupr(user[i].cin)) == 0) {
+                exist = 1;
+                break;
+            }
+            i++;
+        }
+        if (exist) {
+            infoTable(user[i]);
+        } else {
+            printf("#### ERROR 404: account with CIN: %s not found", cin);
+        }
     }
+    int finalMenu;
+    mg_s
+    printf("[1] - Back          [2] - Main Menu           [Any key] - Quite");
+    printf("\n     Enter your choice: ");
+    scanf("%d", &finalMenu);
+    fflush(stdin);
+    if (finalMenu == 1) {
+        displayMenu();
+    } else if(finalMenu == 2) {
+        startApplication();
     }
+    
 }
 
 void startApplication() {
@@ -359,6 +396,7 @@ void startApplication() {
             break;
         case 4:
             displayMenu();
+            // startApplication();
             break;
         case 5:
             break;
