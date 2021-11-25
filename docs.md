@@ -187,3 +187,19 @@ I have optimized the code, add some features like checking of there is an accoun
 ### plan for tomorrow:
 
 the last day. I have to finish the `deposit` function, the display tasks (sorting accounts), loyality feature of the bank and try to make some of the optional challenges.
+
+### The Last Day
+
+YOOO, I did it. after creating the `parseData()` function everything becomes easy. starting with **deposite()**, it takes the index of the user and the count of users in the data array. I ask for amount to add to the account (_of course It have to be positive or he will enter it again_), then change the amount in the `struct` of that user, delete data from the db then create new data based on the updated data in `user` array.
+
+## Display:
+
+I only used one function to sort the data, first I call the `parseData()`, then I take one of 5 choices from the user, the **first** and **second** one will sort the data in acending or decending order, all this is done by `sortData()` function and it uses the **_Bubble sort Algorithm_** (the easiest one), it affects the data array so I only print infos directly to the user.
+the **third** and **fourth** uses the same function as before but after sorting the array I loop over it and only show the data that has the bigger amount.
+the **fifth** choice is searching by `CIN`, I only use regular loop over the array and try to find the CIN in every user. if I found it I print the data of that user, else I print error.
+
+## Loyalty:
+
+parse the data then sort the data array decendently and print the first 3 accounts. then if you want to give them a bonus you just enter 1 and all the 3 users will have new data (new data means overwriting the old data in the file)
+
+> I learned too much in that project. how to deal with files (create, write and delete), how to parse and read the data from a file. learned about structs and how to deal with arrays of structs. developed my skills of thinking and planing (and googling (solving\* poblems)). I'm happy with everything I did till now.

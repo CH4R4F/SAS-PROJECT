@@ -32,20 +32,7 @@ void  table(newAccount acc) {
     printf("========================================================\n");
 }
 
-// show table based on user's info
-void infoTable(newAccount acc) {
-    mg_s
 
-    printf("Id: %d\n", acc.id);
-    printf("Name: %s %s\n", acc.fn, acc.ln);
-    printf("CIN: %s\n", acc.cin);
-    printf("Amount: %.2f\n", acc.amount);
-}
-
-// row info
-void rowInfo(newAccount acc) {
-    printf("name: %s %s | CIN: %s | amount: %.2f\n\n", acc.fn, acc.ln, acc.cin, acc.amount);
-}
 // create account function
 void createAccount(int i) {
     clear();
@@ -141,7 +128,7 @@ void withdraw(int index, int x) {
     fclose(db);
     printf("#### => Operation Done Successfully\n");
     // show changes
-    infoTable(user[index]);
+    table(user[index]);
     // then update the db with the data I parsed and edited
     for (int i = 0; i < x - 1; i++) {
         saveAccount(user[i]);
@@ -157,8 +144,6 @@ void withdraw(int index, int x) {
     fflush(stdin);
     if(c == 1) {
         startApplication();
-    } else {
-        return;
     }
 }
 
@@ -177,7 +162,7 @@ void deposite(int index, int count) {
     fclose(db);
     // show changes
     printf("#### => Operation Done Successfully\n");
-    infoTable(user[index]);
+    table(user[index]);
     // then update the db with the data I parsed and edited
     for (int i = 0; i < count - 1; i++) {
         saveAccount(user[i]);
@@ -192,9 +177,7 @@ void deposite(int index, int count) {
     fflush(stdin);
     if(c == 1) {
         startApplication();
-    } else {
-        return;
-    }
+    } 
 
 
 }
@@ -246,11 +229,11 @@ void operations() {
             }
         } while (userCin[0] == '\0');
         
-        infoTable(user[i]);
+        table(user[i]);
         mg_s
-        printf("[1] - withdrw\n");
-        printf("[2] - seposit\n");
-        printf("[0] - back\n");
+        printf("[1] - Withdrw\n");
+        printf("[2] - Deposit\n");
+        printf("[0] - Back\n");
         retry:
         printf("   Enter your choice: ");
         scanf("%d", &choice);
@@ -320,7 +303,7 @@ void displayMenu() {
     if (choice == 1 || choice == 2) {
         sortData(choice);
         for (int i = 0; i < count; i++) {
-            infoTable(user[i]);
+            table(user[i]);
         }
     } else if(choice == 3 || choice == 4) {
         sortData(choice);
@@ -331,7 +314,7 @@ void displayMenu() {
         fflush(stdin);
         for (int i = 0; i < count; i++) {
             if(user[i].amount >= min) {
-                infoTable(user[i]);
+                table(user[i]);
             }
         }
     } else if(choice == 5) {
@@ -347,7 +330,7 @@ void displayMenu() {
             i++;
         }
         if (exist) {
-            infoTable(user[i]);
+            table(user[i]);
         } else {
             printf("#### ERROR 404: account with CIN: %s not found", cin);
         }
@@ -438,7 +421,6 @@ void startApplication() {
             break;
         case 3:
             operations();
-            startApplication();
             break;
         case 4:
             displayMenu();
@@ -452,4 +434,5 @@ void startApplication() {
             goto invalid;
     }
 
+    printf("Have a good day :)");
 }
