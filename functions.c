@@ -282,6 +282,9 @@ void sortData(int x){
 
 void displayMenu() {
     clear();
+
+    printf("########## Main Menu > Display ##########");
+    mg_s
     int choice;
     // parse and loop over the data and show initial data table
     parseData();
@@ -385,6 +388,71 @@ void reprise() {
     
 }
 
+void startLetter(char c, char u, int count) {
+    int i = 0, kayn = 0;
+    while(i < count) {
+        if(user[i].fn[0] == c || user[i].fn[0] == u) {
+            kayn = 1;
+            table(user[i]);
+        }
+        i++;
+    }
+    if(!kayn) {
+        printf("\nOops, There is no account starts with letter '%c'", c);
+    }
+}
+
+// Challenges Supplémentaires
+void challengesSup() {
+    int ch;
+    clear();
+    do {
+        do {
+            printf("########## Optional Challenges ##########");
+            mg_s
+            printf("[1] - Total amount stored in the bank\n");
+            printf("[2] - Average amount per Account\n");
+            printf("[3] - Show accounts that stars with letter \"A\"\n");   
+            printf("[4] - Show accounts that stars with letter \"B\"\n");  
+            printf("[5] - Back\n");
+            mg_s
+            printf("  => Enter your choice: ");
+            scanf("%d", &ch);
+        } while(ch < 0 || ch > 6);
+        
+        parseData();
+        float total = 0;
+        int count = idGen() - 1;
+
+        if(ch == 1) {
+            int i = 0;
+            while (i < count) {
+                table(user[i]);
+                total += user[i].amount;
+                i++;
+            }
+            mg_s
+            printf("  => The Total amount of money stored in the bank is %f\n", total);
+        } else if(ch == 2) {
+            int i = 0;
+            while (i < count) {
+                table(user[i]);
+                total += user[i].amount;
+                i++;
+            }
+            mg_s
+            printf("  => The Average Amount per account in the bank is %f\n", (total / count));
+        } else if(ch == 3) {
+            startLetter('a', 'A', count);
+        } else if(ch == 4) {
+            startLetter('b', 'B', count);
+        } else {
+            break;
+        }
+    } while(ch != 5);
+    startApplication();
+}
+
 void startApplication() {
     int input;
     goto start;
@@ -403,6 +471,7 @@ void startApplication() {
     printf("[5] - Loyalty.\n");
     printf("[6] - Quite.\n");
 
+    printf("[7] - Sup ;).\n");
     mg_m
 
     printf("    Enter your choice: ");
@@ -429,6 +498,9 @@ void startApplication() {
             reprise();
             break;
         case 6:
+            break;
+        case 7:
+            challengesSup();
             break;
         default:
             goto invalid;
